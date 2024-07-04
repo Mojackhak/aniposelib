@@ -277,6 +277,7 @@ class CalibrationObject(ABC):
         else:
             it = range(length)
 
+        # print(it)
         for framenum in it:
             imname = images[framenum]
             frame = cv2.imread(imname)
@@ -303,7 +304,7 @@ class CalibrationObject(ABC):
 
         return rows
 
-    def detect_video(self, vidname, prefix=None, skip=20, progress=False):
+    def detect_video(self, vidname, prefix=None, skip=1, progress=False):
         cap = cv2.VideoCapture(vidname)
         if not cap.isOpened():
             raise FileNotFoundError(f'missing video file "{vidname}"')
@@ -319,6 +320,7 @@ class CalibrationObject(ABC):
             it = trange(length, ncols=70)
         else:
             it = range(length)
+
 
         for framenum in it:
             ret, frame = cap.read()
@@ -561,7 +563,7 @@ class CharucoBoard(CalibrationObject):
         dkey = (marker_bits, dict_size)
         self.dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_DICTS[dkey])
 
-        self.board = cv2.aruco.CharucoBoard([squaresX, squaresY],
+        self.board = cv2.aruco.CharucoBoard((squaresX, squaresY),
                                             square_length, marker_length,
                                             self.dictionary)
 
@@ -606,9 +608,9 @@ class CharucoBoard(CalibrationObject):
 
         params = cv2.aruco.DetectorParameters()
         params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_CONTOUR
-        params.adaptiveThreshWinSizeMin = 50
-        params.adaptiveThreshWinSizeMax = 700
-        params.adaptiveThreshWinSizeStep = 50
+        params.adaptiveThreshWinSizeMin = 5
+        params.adaptiveThreshWinSizeMax = 400
+        params.adaptiveThreshWinSizeStep = 25
         params.adaptiveThreshConstant = 0
 
         try:
@@ -645,9 +647,13 @@ class CharucoBoard(CalibrationObject):
         else:
             gray = image
 
-        corners, ids = self.detect_markers(image, camera, refine=True)
+
+        corners, ids = self.detect_markers(gray, camera, refine=True)
+        # print(len(corners))
+        # corners, ids, _ = cv2.aruco.detectMarkers(gray, self.dictionary)
+
         if len(corners) > 0:
-            ret, detectedCorners, detectedIds = cv2.aruco.interpolateCornersCharuco(
+            _, detectedCorners, detectedIds = cv2.aruco.interpolateCornersCharuco(
                 corners, ids, gray, self.board)
             if detectedIds is None:
                 detectedCorners = detectedIds = np.float64([])
