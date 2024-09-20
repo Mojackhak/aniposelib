@@ -589,7 +589,7 @@ class CharucoBoard(CalibrationObject):
         return np.copy(self.empty_detection)
 
     def draw(self, size):
-        return self.board.draw(size)
+        return self.board.generateImage(size) # opencv 4.10.0
 
     def fill_points(self, corners, ids):
         out = self.get_empty_detection()
