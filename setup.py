@@ -5,13 +5,17 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="aniposelib",
-    version="0.7.12",
+    version="0.7.12.post1",
     author="Lili Karashchuk",
     author_email="lili.karashchuk@gmail.com",
-    description="An easy-to-use library for calibrating cameras in python, made for Anipose",
+    description="Mojackhak fork of Aniposelib for camera calibration and 3D tracking support",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/lambdaloop/aniposelib",
+    url="https://github.com/Mojackhak/aniposelib",
+    project_urls={
+        "Repository": "https://github.com/Mojackhak/aniposelib",
+        "Upstream": "https://github.com/lambdaloop/aniposelib",
+    },
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
